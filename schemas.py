@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr
+from typing import Optional
 
 # Creo esquemas de Pydantic para validar entradas y salidas, asegurar tipos y convertir automaticamente ORM en dict JSON serializables
 class TaskBase(BaseModel):
@@ -14,6 +15,12 @@ class Task(TaskBase):
     class Config:
         orm_mode = True # permite convertir un objeto SQLAlchemy en un dict automáticamente. Es clave para FastAPI cuando retornás objetos del ORM.
 
+class TaskUpdate(BaseModel):
+    id: int
+    title: Optional[str] = None
+    description: Optional[str] = None
+    completed: Optional[bool] = None
+
 class UserBase(BaseModel):
     email: EmailStr
 
@@ -24,3 +31,8 @@ class User(UserBase):
     id: int
     class Config:
         orm_mode = True
+
+class UserUpdate(BaseModel):
+    id: int
+    email: Optional[EmailStr] = None
+    password: Optional[str] = None

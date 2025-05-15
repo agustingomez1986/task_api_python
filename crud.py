@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from models import User, Task
-from schemas import UserCreate, TaskCreate
+from schemas import UserCreate, TaskCreate, UserUpdate, TaskUpdate
 from auth import get_password_hash
 
 def create_user(db: Session, user: UserCreate):
@@ -19,8 +19,20 @@ def delete_user_by_email(db: Session, email: str):
     if db_user:
         db.delete(db_user)
         db.commit()
-        return True
-    return False
+        return True # Se eliminó correctamente
+    return False # Error al eliminar
+
+def update_user(db: Session, user_id: int, user_update: UserUpdate):
+    db_user = db.query(User).filter(User.id == user_update.id).first()
+    if not db_user:
+        return None
+    if user_update.email:
+        db_user.email = user_update.email
+    if user_update.password:
+        db_user.hashed_password = get_password_hash(user_update.password)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
 
 def create_task(db: Session, task: TaskCreate, user_id: int):
     db_task = Task(title=task.title, description=task.description, owner_id=user_id)
@@ -37,3 +49,25 @@ def get_task_by_email(db: Session, email: str):
 
 def get_task_by_owner_id(db: Session, user_id: str):
     return db.query(Task).filter(Task.owner_id == user_id).all()
+
+def delete_task_by_title(db: Session, title: str):
+    db_task = db.query(Task).filter(Task.title == title).first()
+    if db_task:
+        db.delete(db_task)
+        db.commit()
+        return True # Se eliminó correctamente
+    return False # Error al eliminar
+
+def update_task(db: Session, task_update: TaskUpdate):
+    db_task = db.query(Task).filter(Task.id == task_update.id).first()
+    if not db_task:
+        return None
+    if task_update.title:
+        db_task.title = task_update.title
+    if task_update.description:
+        db_task.description = task_update.description
+    if task_update.completed:
+        db_task.completed = task_update.completed
+    db.commit()
+    db.refresh(db_task)
+    return db_task
