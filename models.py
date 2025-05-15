@@ -1,7 +1,8 @@
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
-from database import Base
+from database import Base # Base = declarative_base()
 
+# Creo las tablas users y tasks con sus columnas y la relación
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)

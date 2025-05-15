@@ -13,4 +13,5 @@ app.include_router(tasks.router)
 def read_root():
     return {"message": "API de gestión de tareas"}
 
-Base.metadata.create_all(bind=engine)
+# Creo tablas en la DB si todavía no existen
+Base.metadata.create_all(bind=engine) # engine es la conexión a la DB
