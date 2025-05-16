@@ -22,7 +22,7 @@ def delete_user_by_email(db: Session, email: str):
         return True # Se eliminó correctamente
     return False # Error al eliminar
 
-def update_user(db: Session, user_id: int, user_update: UserUpdate):
+def update_user(db: Session, user_update: UserUpdate):
     db_user = db.query(User).filter(User.id == user_update.id).first()
     if not db_user:
         return None
@@ -66,7 +66,7 @@ def update_task(db: Session, task_update: TaskUpdate):
         db_task.title = task_update.title
     if task_update.description:
         db_task.description = task_update.description
-    if task_update.completed:
+    if task_update.completed is not None:
         db_task.completed = task_update.completed
     db.commit()
     db.refresh(db_task)

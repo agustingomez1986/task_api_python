@@ -36,3 +36,6 @@ class UserUpdate(BaseModel):
     id: int
     email: Optional[EmailStr] = None
     password: Optional[str] = None
+
+class TokenData(BaseModel):
+    email: Optional[EmailStr] = None
