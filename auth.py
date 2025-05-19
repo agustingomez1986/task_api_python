@@ -5,7 +5,6 @@ from typing import Optional
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-from database import SessionLocal
 from models import User
 from schemas import TokenData
 from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRTE_MINUTES
@@ -29,14 +28,6 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRTE_MINUTES))
     to_encode.update({"exp": expire}) # Agrega expire al dict
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-
-# Obtener DB (para dependencias)
-def get_db():
-    db = SessionLocal() # SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-    try:
-        yield db # FastAPI detecta funciones con yield como dependencias que necesitan limpieza
-    finally:
-        db.close()
 
 # Decodificar el token y obtener usuario
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):

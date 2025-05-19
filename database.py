@@ -15,3 +15,11 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Clase base de modelos (tablas) de la db
 Base = declarative_base()
+
+# Obtener DB (para dependencias)
+def get_db():
+    db = SessionLocal() # SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    try:
+        yield db # FastAPI detecta funciones con yield como dependencias que necesitan limpieza
+    finally:
+        db.close()
