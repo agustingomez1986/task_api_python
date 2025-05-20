@@ -50,16 +50,16 @@ def get_task_by_email(db: Session, email: str):
 def get_task_by_owner_id(db: Session, user_id: str):
     return db.query(Task).filter(Task.owner_id == user_id).all()
 
-def delete_task_by_title(db: Session, title: str):
-    db_task = db.query(Task).filter(Task.title == title).first()
+def delete_task_by_title(db: Session, title: str, user_id: int):
+    db_task = db.query(Task).filter(Task.title == title, Task.owner_id == user_id).first()
     if db_task:
         db.delete(db_task)
         db.commit()
         return True # Se eliminó correctamente
     return False # Error al eliminar
 
-def update_task(db: Session, task_update: TaskUpdate):
-    db_task = db.query(Task).filter(Task.id == task_update.id).first()
+def update_task(db: Session, task_update: TaskUpdate, user_id: int):
+    db_task = db.query(Task).filter(Task.id == task_update.id, Task.owner_id == user_id).first()
     if not db_task:
         return None
     if task_update.title:
