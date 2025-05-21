@@ -6,7 +6,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from models import User
-from schemas import TokenData
+#from schemas import TokenData
 from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRTE_MINUTES
 from database import get_db
 
@@ -39,14 +39,14 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        email: str = payload.get("sub")
-        if email is None:
+        user_id: int = payload.get("sub")
+        if user_id is None:
             raise credentials_exception
-        token_data = TokenData(email=email)
+        #token_data = TokenData(id=user_id)
     except JWTError:
         raise credentials_exception
     
-    user = db.query(User).filter(User.email == token_data.email).first()
+    user = db.query(User).filter(User.id == user_id).first()
     if user is None:
         raise credentials_exception
     return user

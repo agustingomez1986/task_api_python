@@ -12,8 +12,9 @@ class TaskCreate(TaskBase):
 class Task(TaskBase):
     id: int
     completed: bool
-    class Config:
-        orm_mode = True # permite convertir un objeto SQLAlchemy en un dict automáticamente. Es clave para FastAPI cuando retornás objetos del ORM.
+    model_config = {
+        "form_attributes": True # permite convertir un objeto SQLAlchemy en un dict automáticamente. Es clave para FastAPI cuando retornás objetos del ORM.
+    }
 
 class TaskUpdate(BaseModel):
     id: int
@@ -29,11 +30,11 @@ class UserCreate(UserBase):
 
 class User(UserBase):
     id: int
-    class Config:
-        orm_mode = True
+    model_config = {
+        "form_attributes": True # permite convertir un objeto SQLAlchemy en un dict automáticamente. Es clave para FastAPI cuando retornás objetos del ORM.
+    }
 
 class UserUpdate(BaseModel):
-    id: int
     email: Optional[EmailStr] = None
     password: Optional[str] = None
 
@@ -41,5 +42,5 @@ class UserLogin(BaseModel):
     email: EmailStr
     password: str
 
-class TokenData(BaseModel):
-    email: Optional[EmailStr] = None
+#class TokenData(BaseModel):
+#    id: Optional[int] = None

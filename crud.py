@@ -22,8 +22,8 @@ def delete_user_by_email(db: Session, email: str):
         return True # Se eliminó correctamente
     return False # Error al eliminar
 
-def update_user(db: Session, user_update: UserUpdate):
-    db_user = db.query(User).filter(User.id == user_update.id).first()
+def update_user(user_id: int, db: Session, user_update: UserUpdate):
+    db_user = db.query(User).filter(User.id == user_id).first()
     if not db_user:
         return None
     if user_update.email:

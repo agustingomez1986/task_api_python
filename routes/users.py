@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from schemas import UserCreate, User, UserUpdate, UserLogin
@@ -11,18 +11,35 @@ router = APIRouter()
 
 @router.post("/register")
 def register_user(user: UserCreate, db: Session = Depends(get_db)):
-    db_user = get_user_by_email(db, user.email)
-    if db_user:
-        raise HTTPException(status_code=400, detail="Email ya registrado")
-    return create_user(db, user)
+    existing_user = get_user_by_email(db, user.email)
+    if existing_user:
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            content={"detail": "Email ya registrado"}
+        )
+    new_user = create_user(db, user)
+    return JSONResponse(
+        status_code=status.HTTP_201_CREATED,
+        content={"message": "Usuario registrado exitosamente", "user": {"email": new_user.email}}
+    )
 
 @router.post("/login")
-def login(user: UserLogin, db: Session = Depends(get_db)):
+def login(user: UserLogin, db: Session = Depends(get_db)): # Aquí login espera un json porque UserLogin es un modelo pydantic. Normalmente se usa form-data que es el estandar de OAuth2
     db_user = get_user_by_email(db, user.email) # get_user_by_email deuelve un User
     if not db_user or not verify_password(user.password, db_user.hashed_password):
-        raise HTTPException(status_code=401, detail="Credenciales invalidas")
-    access_token = create_access_token(data={"sub": db_user.email})
-    return {"access_token": access_token, "token_type": "bearer"}
+        return JSONResponse(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            content={"message": "Credenciales invalidas"}
+        )
+    access_token = create_access_token(data={"sub": db_user.id})
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={
+            "message": "Login exitoso",
+            "access_token": access_token, 
+            "token_type": "bearer"
+        }
+    )
 
 @router.delete("/users")
 def delete_user(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
@@ -32,10 +49,10 @@ def delete_user(db: Session = Depends(get_db), current_user: User = Depends(get_
     return JSONResponse(status_code=404, content={"detail":"Error al eliminar usuario"})
     
 @router.put("/users")
-def update_user(user: UserUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    if user.id != current_user.id:
-        JSONResponse(status_code=404, content={"detail":"No puede actualizar otro usuario"})
-    updated_user = update_user_crud(db, user)
+def update_user(user_update: UserUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    #if user.id != current_user.id:
+    #    JSONResponse(status_code=404, content={"detail":"No puede actualizar otro usuario"})
+    updated_user = update_user_crud(current_user.id, db, user_update)
     if updated_user:
         return JSONResponse(status_code=200, content={"detail":"Usuario actualizado"})
     return JSONResponse(status_code=404, content={"detail":"Error al actualizar usuario"})
