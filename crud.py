@@ -47,11 +47,11 @@ def get_task_by_email(db: Session, email: str):
         return user.tasks
     return []
 
-def get_task_by_owner_id(db: Session, user_id: str):
+def get_task_by_owner_id(db: Session, user_id: int):
     return db.query(Task).filter(Task.owner_id == user_id).all()
 
-def delete_task_by_title(db: Session, title: str, user_id: int):
-    db_task = db.query(Task).filter(Task.title == title, Task.owner_id == user_id).first()
+def delete_task_by_id(db: Session, task_id: int, user_id: int):
+    db_task = db.query(Task).filter(Task.id == task_id, Task.owner_id == user_id).first()
     if db_task:
         db.delete(db_task)
         db.commit()
