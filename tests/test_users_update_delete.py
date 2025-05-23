@@ -1,11 +1,11 @@
 from fastapi.testclient import TestClient
-from main import app
+from app.main import app
 
 client = TestClient(app)
 
 def test_update_delete():
     user_data = {
-        "email": "test7@example.com",
+        "email": "test9@example.com",
         "password": "nuevopassword"
     }
 

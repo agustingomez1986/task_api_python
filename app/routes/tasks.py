@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
-from schemas import TaskCreate, User, TaskUpdate
-from auth import get_current_user
-from database import get_db
+from app.schemas import TaskCreate, User, TaskUpdate
+from app.auth import get_current_user
+from app.database import get_db
 from sqlalchemy.orm import Session
-from crud import create_task, delete_task_by_id, update_task as update_task_crud, get_task_by_owner_id
-from models import Task as TaskModel
+from app.crud import create_task, delete_task_by_id, update_task as update_task_crud, get_task_by_owner_id
+from app.models import Task as TaskModel
 
 router = APIRouter()
 

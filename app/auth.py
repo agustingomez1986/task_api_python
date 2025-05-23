@@ -5,10 +5,10 @@ from typing import Optional
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-from models import User
+from app.models import User
 #from schemas import TokenData
-from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRTE_MINUTES
-from database import get_db
+from app.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRTE_MINUTES
+from app.database import get_db
 
 # Configuracion de hash
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto") # Esta línea crea un contexto de hashing que define cómo se van a generar y verificar los hashes de contraseñas

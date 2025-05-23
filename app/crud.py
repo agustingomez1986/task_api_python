@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
-from models import User, Task
-from schemas import UserCreate, TaskCreate, UserUpdate, TaskUpdate
-from auth import get_password_hash
+from app.models import User, Task
+from app.schemas import UserCreate, TaskCreate, UserUpdate, TaskUpdate
+from app.auth import get_password_hash
 
 def create_user(db: Session, user: UserCreate):
     hashed_pw = get_password_hash(user.password)

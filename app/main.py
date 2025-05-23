@@ -1,6 +1,6 @@
 from fastapi import FastAPI # Importa la clase `FastAPI`, que es la base para crear tu aplicación web.
-from routes import users, tasks # Se espera que cada uno contenga un router (un conjunto de rutas relacionadas).
-from database import Base, engine
+from app.routes import users, tasks # Se espera que cada uno contenga un router (un conjunto de rutas relacionadas).
+from app.database import Base, engine
 
 
 # Crea una instancia de la aplicación FastAPI.

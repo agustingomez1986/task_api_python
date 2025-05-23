@@ -1,12 +1,12 @@
 from fastapi.testclient import TestClient
-from main import app
+from app.main import app
 
 client = TestClient(app)
 
 def test_register_and_login():
     # Datos de usuario
     user_data = {
-        "email": "test7@example.com",
+        "email": "test2@example.com",
         "password": "password123"
     }
 
