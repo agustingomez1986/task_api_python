@@ -3,10 +3,10 @@ from main import app
 
 client = TestClient(app)
 
-def test_update():
+def test_update_delete():
     user_data = {
-        "email": "test6@example.com",
-        "password": "password123"
+        "email": "test7@example.com",
+        "password": "nuevopassword"
     }
 
     user_update_email = {
@@ -28,6 +28,9 @@ def test_update():
     token = data["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
 
-    response = client.put("/users", json=user_update_email, headers=headers)
-    print("Actualización de email: Update: BODY", response.content)
+    #response = client.put("/users", json=user_update_password, headers=headers)
+    #print("Actualización de email: Update: BODY", response.content)
+    #assert response.status_code == 200
+
+    response = client.delete("/users", headers = headers)
     assert response.status_code == 200

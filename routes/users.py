@@ -31,7 +31,7 @@ def login(user: UserLogin, db: Session = Depends(get_db)): # Aquí login espera 
             status_code=status.HTTP_401_UNAUTHORIZED,
             content={"message": "Credenciales invalidas"}
         )
-    access_token = create_access_token(data={"sub": db_user.id})
+    access_token = create_access_token(data={"sub": str(db_user.id)})
     return JSONResponse(
         status_code=status.HTTP_200_OK,
         content={
@@ -50,8 +50,6 @@ def delete_user(db: Session = Depends(get_db), current_user: User = Depends(get_
     
 @router.put("/users")
 def update_user(user_update: UserUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    #if user.id != current_user.id:
-    #    JSONResponse(status_code=404, content={"detail":"No puede actualizar otro usuario"})
     updated_user = update_user_crud(current_user.id, db, user_update)
     if updated_user:
         return JSONResponse(status_code=200, content={"detail":"Usuario actualizado"})

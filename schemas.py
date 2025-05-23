@@ -41,6 +41,3 @@ class UserUpdate(BaseModel):
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
-
-#class TokenData(BaseModel):
-#    id: Optional[int] = None
